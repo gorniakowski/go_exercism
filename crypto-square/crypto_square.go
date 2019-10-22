@@ -1,8 +1,14 @@
 package cryptosquare
 
-import "strings"
+import "unicode"
 
 func normalize(input string) (result string) {
-	result = strings.ReplaceAll(strings.ToLower(input), " ", "")
+
+	for _, char := range input {
+		if unicode.IsDigit(char) && unicode.IsLetter(char) {
+			char = unicode.ToLower(char)
+			result += string(char)
+		}
+	}
 	return
 }
