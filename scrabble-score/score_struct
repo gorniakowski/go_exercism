@@ -1,0 +1,51 @@
+package scrabble
+
+import (
+	"strings"
+)
+
+type letterScore struct {
+	letters []string
+	score   int
+}
+
+var scoreBoard = []letterScore{
+	{[]string{"A", "E", "I", "O", "U", "L", "N", "R", "S", "T"}, 1},
+	{[]string{"D", "G"}, 2},
+	{[]string{"B", "C", "M", "P"}, 3},
+	{[]string{"F", "H", "V", "W", "Y"}, 4},
+	{[]string{"K"}, 5},
+	{[]string{"J", "X"}, 8},
+	{[]string{"Q", "Z"}, 10},
+}
+
+func searchInSlice(slice []string, letter string) bool {
+	for _, val := range slice {
+		if val == letter {
+			return true
+		}
+	}
+
+	return false
+}
+
+func scoreLetter(scoreBoard []letterScore, letter string) int {
+	for _, val := range scoreBoard {
+		if searchInSlice(val.letters, letter) {
+			return val.score
+		}
+	}
+	return 0
+}
+
+//Score returns a total scrabble score of a given string
+func Score(input string) (result int) {
+
+	inputNorm := strings.Split(strings.ToTitle(input), "")
+
+	for _, val := range inputNorm {
+		result += scoreLetter(scoreBoard, val)
+	}
+	return
+
+}
