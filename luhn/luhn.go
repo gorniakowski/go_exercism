@@ -12,10 +12,9 @@ func Valid(input string) bool {
 		return false
 	}
 	sum := 0
-	shallDouble := false
-	for i := len(input) - 1; i >= 0; i-- {
-		digit := int(input[i] - '0')
-
+	shallDouble := len(input)%2 == 0
+	for _, digit := range input {
+		digit := int(digit - '0')
 		if digit >= 10 {
 			return false
 		}
