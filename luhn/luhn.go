@@ -4,15 +4,6 @@ import (
 	"strings"
 )
 
-//DoubleDigit doubles the given number if doubled number is over 9 it substracts 9 from it
-func DoubleDigit(digit int) int {
-	digit = digit * 2
-	if digit > 9 {
-		digit = digit - 9
-	}
-	return digit
-}
-
 //Valid return wherer the given number is valid per Luhns formula.
 func Valid(input string) bool {
 
@@ -28,11 +19,14 @@ func Valid(input string) bool {
 		if digit >= 10 {
 			return false
 		}
+
 		if shallDouble {
-			sum += DoubleDigit(digit)
-			shallDouble = !shallDouble
-			continue
+			digit *= 2
+			if digit > 9 {
+				digit -= 9
+			}
 		}
+
 		sum += digit
 		shallDouble = !shallDouble
 
