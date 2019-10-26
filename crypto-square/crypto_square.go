@@ -1,7 +1,7 @@
 package cryptosquare
 
 import (
-	"fmt"
+	"strings"
 	"unicode"
 )
 
@@ -17,20 +17,45 @@ func normalize(input string) (result string) {
 	return
 }
 
-type Rectangle [][]rune
-
 func Encode(input string) string {
 	input = normalize(input)
 
 	c, r := 1, 0
+	alternator := true
 	for {
-
 		if c >= r && c-r <= 1 && c*r >= len(input) {
 			break
 		}
-		c++
-		r++
+		if alternator {
+			r++
+			alternator = !alternator
+		} else {
+			c++
+			alternator = !alternator
+		}
+
 	}
-	fmt.Println(c, r)
-	return ""
+	for {
+		if len(input) < c*r {
+			input = input + " "
+		} else {
+			break
+		}
+	}
+
+	square := []string{}
+	result := ""
+	for i := 0; i < r; i++ {
+		row := input[i*c : i*c+c]
+		square = append(square, row)
+	}
+
+	for i := 0; i < c; i++ {
+		for j := 0; j < r; j++ {
+			result += string(square[j][i])
+		}
+		result += " "
+	}
+
+	return strings.TrimSuffix(result, " ")
 }
