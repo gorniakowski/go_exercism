@@ -10,7 +10,7 @@ func ExampleClock_new() {
 	// Output: 10:30
 }
 
-func ExampleClock_Add() {
+/* func ExampleClock_Add() {
 	// create a clock
 	clock := New(10, 30)
 
@@ -52,3 +52,4 @@ func ExampleClock_compare() {
 	// true
 	// false
 }
+*/

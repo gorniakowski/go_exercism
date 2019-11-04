@@ -1,9 +1,6 @@
 package clock
 
 import (
-	"reflect"
-	"strconv"
-	"strings"
 	"testing"
 )
 
@@ -38,7 +35,7 @@ func TestCreateClock(t *testing.T) {
 	t.Log(len(timeTests), "test cases")
 }
 
-func TestAddMinutes(t *testing.T) {
+/* func TestAddMinutes(t *testing.T) {
 	for _, a := range addTests {
 		if got := New(a.h, a.m).Add(a.a); got.String() != a.want {
 			t.Fatalf("New(%d, %d).Add(%d) = %q, want %q",
@@ -149,7 +146,7 @@ func BenchmarkSubtractMinutes(b *testing.B) {
 		}
 	}
 }
-
+*/
 func BenchmarkCreateClocks(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for _, n := range timeTests {
