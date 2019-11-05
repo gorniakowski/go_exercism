@@ -25,9 +25,6 @@ func (time Clock) Subtract(mins int) Clock {
 //New Clock constructor
 func New(hour, minute int) Clock {
 
-	if hour == 24 { //we don't want 24 but 00
-		hour = 0
-	}
 	for minute >= 60 {
 		hour++
 		minute -= 60
