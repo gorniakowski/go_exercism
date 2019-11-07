@@ -2,6 +2,7 @@ package lsproduct
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -23,6 +24,16 @@ func LargestSeriesProduct(series string, n int) (result int, err error) {
 		numbersInt = append(numbersInt, number)
 
 	}
-
+	product := 0
+	for i := range numbersInt {
+		if i+n > len(numbersInt) {
+			fmt.Println("you are here")
+			break
+		}
+		for j := 0; j < n; j++ {
+			product *= numbersInt[i+j]
+		}
+	}
+	fmt.Println(product)
 	return 0, nil
 }
