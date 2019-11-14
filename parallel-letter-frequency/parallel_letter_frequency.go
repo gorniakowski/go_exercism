@@ -16,21 +16,20 @@ func Frequency(s string) FreqMap {
 //ConcurrentFrequency returns character frequency map form slice of strings
 func ConcurrentFrequency(input []string) FreqMap {
 	result := make(FreqMap)
-	chMap := make(chan FreqMap)
+	chMap := make(chan FreqMap, 10)
 
 	for _, text := range input {
-		go func(chMap chan FreqMap, text string) {
+		go func(text string) {
 			chMap <- Frequency(text)
-		}(chMap, text)
+		}(text)
 	}
 
 	for range input {
-		select {
-		case r := <-chMap:
-			for i := range r {
-				result[i] += r[i]
-			}
+		r := <-chMap
+		for i := range r {
+			result[i] += r[i]
 		}
 	}
+
 	return result
 }
