@@ -43,26 +43,13 @@ func Build(records []Record) (*Node, error) {
 	whereAreThey[0] = &result
 
 	for i, rec := range records[1:] {
-		//Parent must have lover id than the record iteslf
-		if rec.ID <= rec.Parent {
-			return nil, errors.New("Wrong parent no no")
+		//Check if tree is valid
+		if rec.ID <= rec.Parent || whereAreThey[i].ID-rec.ID != -1 || whereAreThey[i].ID == rec.ID {
+			return nil, errors.New("Invalid tree")
 		}
-		//Recods must be coninous
-		if whereAreThey[i].ID-rec.ID != -1 {
-			return nil, errors.New("non continous id")
-		}
-		//Check if record's ID repeats
-		if whereAreThey[i].ID == rec.ID {
-			return nil, errors.New("same ID is no no")
-		}
-		if whereAreThey[rec.Parent].Children == nil {
-			whereAreThey[rec.Parent].Children = make([]*Node, 0)
-		}
-		newNode := Node{ID: rec.ID}
-		whereAreThey[rec.ID] = &newNode
-		whereAreThey[rec.Parent].Children = append(whereAreThey[rec.Parent].Children, &newNode)
+		whereAreThey[rec.ID] = &Node{ID: rec.ID}
+		whereAreThey[rec.Parent].Children = append(whereAreThey[rec.Parent].Children, whereAreThey[rec.ID])
 
 	}
-
 	return &result, nil
 }
