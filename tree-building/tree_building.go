@@ -20,36 +20,19 @@ type Node struct {
 //Build parses slice of recods from database into tree
 func Build(records []Record) (*Node, error) {
 	sort.SliceStable(records, func(i, j int) bool { return records[i].ID < records[j].ID })
-	//Check if recods are empty
-	if len(records) == 0 {
-		return nil, nil
-	}
-	//Check if we have root
-	if records[0].ID != 0 {
+	var tree = make(map[int]*Node)
 
-		return nil, errors.New("no root, no go")
-	}
-	//We don't need to do nothing more if we have a single record
-	if len(records) == 1 {
-		return &Node{ID: 0}, nil
-	}
-	//Root node can't have a parent
-	if records[0].Parent != 0 {
-		return nil, errors.New("root papa is a no no")
-	}
-
-	var whereAreThey = make([]*Node, len(records))
-	result := Node{ID: records[0].ID, Children: make([]*Node, 0)}
-	whereAreThey[0] = &result
-
-	for i, rec := range records[1:] {
+	for i, rec := range records {
 		//Check if tree is valid
-		if rec.ID <= rec.Parent || whereAreThey[i].ID-rec.ID != -1 || whereAreThey[i].ID == rec.ID {
-			return nil, errors.New("Invalid tree")
+		if (records[0].Parent != 0 || records[0].ID != 0) ||
+			i > 0 && ((tree[i-1].ID-rec.ID != -1) || rec.Parent >= rec.ID) {
+			return nil, errors.New("wrong tree")
 		}
-		whereAreThey[rec.ID] = &Node{ID: rec.ID}
-		whereAreThey[rec.Parent].Children = append(whereAreThey[rec.Parent].Children, whereAreThey[rec.ID])
-
+		tree[rec.ID] = &Node{ID: rec.ID}
+		if i > 0 {
+			tree[rec.Parent].Children = append(tree[rec.Parent].Children, tree[rec.ID])
+		}
 	}
-	return &result, nil
+
+	return tree[0], nil
 }
