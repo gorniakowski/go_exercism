@@ -24,8 +24,8 @@ func Build(records []Record) (*Node, error) {
 
 	for i, rec := range records {
 		//Check if tree is valid
-		if (records[0].Parent != 0 || records[0].ID != 0) ||
-			i > 0 && ((tree[i-1].ID-rec.ID != -1) || rec.Parent >= rec.ID) {
+		if rec.ID != i || rec.Parent > rec.ID || rec.ID > 0 && rec.Parent == rec.ID {
+
 			return nil, errors.New("wrong tree")
 		}
 		tree[rec.ID] = &Node{ID: rec.ID}
