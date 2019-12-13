@@ -4,45 +4,33 @@ type Ints []int
 type Lists [][]int
 type Strings []string
 
-func (collction Ints) Keep(f func(int) bool) Ints {
-	if collction == nil {
-		return nil
-	}
-	result := make(Ints, 0)
+func (collction Ints) Keep(f func(int) bool) (result Ints) {
+
 	for _, item := range collction {
 		if f(item) {
 			result = append(result, item)
 		}
 	}
-	return result
+	return
 }
 func (collction Ints) Discard(f func(int) bool) Ints {
-	if collction == nil {
-		return nil
-	}
-	result := Ints{}
-	for _, item := range collction {
-		if !f(item) {
-			result = append(result, item)
-		}
-	}
-	return result
+	return collction.Keep(func(i int) bool { return !f(i) })
 }
-func (collction Lists) Keep(f func([]int) bool) Lists {
-	result := Lists{}
+func (collction Lists) Keep(f func([]int) bool) (result Lists) {
+
 	for _, item := range collction {
 		if f(item) {
 			result = append(result, item)
 		}
 	}
-	return result
+	return
 }
-func (collction Strings) Keep(f func(string) bool) Strings {
-	result := Strings{}
+func (collction Strings) Keep(f func(string) bool) (result Strings) {
+
 	for _, item := range collction {
 		if f(item) {
 			result = append(result, item)
 		}
 	}
-	return result
+	return
 }
