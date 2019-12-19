@@ -1,16 +1,19 @@
 package armstrong
 
-import (
-	"math"
-	"strconv"
-)
+import "math"
 
 func IsNumber(number int) bool {
-	numberString := strconv.Itoa(number)
-	var sum int
-	for _, char := range numberString {
-		digit, _ := strconv.Atoi(string(char))
-		sum += int(math.Pow(float64(digit), float64(len(numberString))))
+	digits := make([]float64, 0)
+	numberOrginal := float64(number)
+	var sum float64
+	for number > 0 {
+		digits = append(digits, float64(number%10))
+		number /= 10
+
 	}
-	return sum == number
+	exponent := float64(len(digits))
+	for _, digit := range digits {
+		sum += math.Pow(digit, exponent)
+	}
+	return sum == numberOrginal
 }
