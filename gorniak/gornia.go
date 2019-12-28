@@ -3,28 +3,47 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println(romanToInt("IV"))
+	fmt.Println(longestCommonPrefix([]string{}))
 }
 
-var values = map[byte]int{
-	'I': 1,
-	'V': 5,
-	'X': 10,
-	'L': 50,
-	'C': 100,
-	'D': 500,
-	'M': 1000,
+type ListNode struct {
+	Val  int
+	Next *ListNode
 }
 
-func romanToInt(s string) int {
-	var result int
-	for i, sym := range s {
-		curr := values[byte(sym)]
-		if i <= len(s)-2 && curr < values[s[i+1]] {
-			result -= curr
+func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
+
+	var curr = new(ListNode)
+	result := curr
+
+	for l1 != nil || l2 != nil {
+
+		if l1 != nil && l2 != nil && l1.Val <= l2.Val {
+			curr.Next = l1
+			l1 = l1.Next
+			curr = curr.Next
 			continue
 		}
-		result += curr
+
+		if l1 != nil && l2 != nil && l1.Val > l2.Val {
+			curr.Next = l2
+			l2 = l2.Next
+			curr = curr.Next
+			continue
+		}
+		if l1 != nil && l2 == nil {
+			curr.Next = l1
+			l1 = l1.Next
+			curr = curr.Next
+			continue
+		}
+		if l2 != nil && l1 == nil {
+			curr.Next = l2
+			l2 = l2.Next
+			curr = curr.Next
+			continue
+		}
+
 	}
-	return result
+	return result.Next
 }
