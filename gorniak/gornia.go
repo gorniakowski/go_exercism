@@ -3,47 +3,16 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println(longestCommonPrefix([]string{}))
+	fmt.Println(removeDuplicates([]int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}))
 }
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
+func removeDuplicates(nums []int) int {
 
-func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
-
-	var curr = new(ListNode)
-	result := curr
-
-	for l1 != nil || l2 != nil {
-
-		if l1 != nil && l2 != nil && l1.Val <= l2.Val {
-			curr.Next = l1
-			l1 = l1.Next
-			curr = curr.Next
-			continue
+	for i := 1; i < len(nums); i++ {
+		if i > 0 && i < len(nums) && nums[i-1] == nums[i] {
+			nums = append(nums[:i], nums[i+1:]...)
+			i--
 		}
-
-		if l1 != nil && l2 != nil && l1.Val > l2.Val {
-			curr.Next = l2
-			l2 = l2.Next
-			curr = curr.Next
-			continue
-		}
-		if l1 != nil && l2 == nil {
-			curr.Next = l1
-			l1 = l1.Next
-			curr = curr.Next
-			continue
-		}
-		if l2 != nil && l1 == nil {
-			curr.Next = l2
-			l2 = l2.Next
-			curr = curr.Next
-			continue
-		}
-
 	}
-	return result.Next
+	return len(nums)
 }
