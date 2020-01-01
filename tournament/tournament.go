@@ -6,15 +6,17 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"sort"
 	"strings"
 )
 
 type Team struct {
-	name string //team name
+	name string // team name
 	mp   int    //matches played
 	mw   int    //matches won
 	md   int    //matches tied
 	ml   int    //matches lost
+	ts   int    //team score
 }
 
 var teamStats = make(map[string]*Team)
@@ -28,9 +30,12 @@ func parseLine(line string) error {
 
 	if teamStats[team1] == nil {
 		teamStats[team1] = new(Team)
+		teamStats[team1].name = team1
+
 	}
 	if teamStats[team2] == nil {
 		teamStats[team2] = new(Team)
+		teamStats[team2].name = team2
 	}
 	if !(result == "win" || result == "loss" || result == "draw") {
 		return errors.New("can't parse that")
@@ -38,6 +43,7 @@ func parseLine(line string) error {
 	if result == "win" {
 		teamStats[team1].mp++
 		teamStats[team1].mw++
+		teamStats[team1].ts += 3
 		teamStats[team2].mp++
 		teamStats[team2].ml++
 
@@ -47,16 +53,35 @@ func parseLine(line string) error {
 		teamStats[team1].ml++
 		teamStats[team2].mp++
 		teamStats[team2].mw++
+		teamStats[team2].ts += 3
 
 	}
 	if result == "draw" {
 		teamStats[team1].mp++
 		teamStats[team1].md++
+		teamStats[team1].ts++
 		teamStats[team2].mp++
 		teamStats[team2].md++
+		teamStats[team2].ts++
 
 	}
 	return nil
+}
+
+func generateTable() string {
+	header := "Team                           | MP |  W |  D |  L |  P"
+	var sortedTable = make([]*Team, 0)
+	for _, team := range teamStats {
+		sortedTable = append(sortedTable, team)
+	}
+	sort.Slice(sortedTable, func(i, j int) bool {
+		return sortedTable[i].ts > sortedTable[j].ts
+	})
+
+	for _, team := range sortedTable {
+		fmt.Println(team)
+	}
+	return header
 }
 
 func Tally(in io.Reader, out io.Writer) error {
@@ -70,12 +95,9 @@ func Tally(in io.Reader, out io.Writer) error {
 			return err
 		}
 	}
-	for team := range teamStats {
-		fmt.Println(teamStats[team].mp)
-	}
 	if err := input.Err(); err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println(generateTable())
 	return nil
 }
