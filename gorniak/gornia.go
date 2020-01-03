@@ -3,16 +3,18 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println(removeElement([]int{3, 2, 2, 3}, 3))
+	fmt.Println(strStr("a", "a"))
 }
 
-func removeElement(nums []int, val int) int {
-	count := 0
-	for i := range nums {
-		if nums[i] != val {
-			nums[count] = nums[i]
-			count++
+func strStr(haystack string, needle string) int {
+	needleLen := len(needle)
+	if needleLen == 0 {
+		return 0
+	}
+	for i := 0; i <= len(haystack)-needleLen; i++ {
+		if haystack[i:i+needleLen] == needle {
+			return i
 		}
 	}
-	return count
+	return -1
 }
