@@ -2,6 +2,7 @@ package tournament
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"strings"
 	"testing"
@@ -113,6 +114,7 @@ func TestTallyHappy(t *testing.T) {
 				tt.description, err)
 		}
 		if actual != tt.expected {
+			fmt.Println(len(actual), len(tt.expected))
 			t.Fatalf("Tally for input named %q was expected to return...\n%s\n...but returned...\n%s",
 				tt.description, tt.expected, actual)
 		}
