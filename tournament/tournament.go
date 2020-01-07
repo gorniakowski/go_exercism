@@ -35,10 +35,6 @@ func parseLine(teamStats map[string]Team, line string) error {
 	team2Stats := teamStats[team2]
 	team1Stats.name, team2Stats.name = team1, team2
 
-	//check if result is correct
-	if !(result == "win" || result == "loss" || result == "draw") {
-		return errors.New("can't parse that")
-	}
 	switch result {
 	case "win":
 		team1Stats.won++
@@ -53,6 +49,9 @@ func parseLine(teamStats map[string]Team, line string) error {
 		team1Stats.score++
 		team2Stats.tied++
 		team2Stats.score++
+	default:
+		return fmt.Errorf("invalid result %q (expected 'win', 'loss', or 'draw')", result)
+
 	}
 
 	team1Stats.matches++
