@@ -135,6 +135,7 @@ var tests = []struct {
 	{"1 2\n3 4\n", false, nil, nil},          // last row empty
 	{"2.7", false, nil, nil},                 // non-int
 	{"cat", false, nil, nil},                 // non-numeric
+	{"1 2\n3", false, nil, nil},
 	// undefined
 	// {"\n\n", // valid?, 3 rows, 0 columns
 	// {"",     // valid?, 0 rows, 0 columns
