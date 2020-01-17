@@ -2,57 +2,44 @@ package matrix
 
 import (
 	"errors"
+	"strconv"
+	"strings"
 )
 
-//matrix represents well matrix :)
-type matrix [][]int
+//Matrix represents well matrix :)
+type Matrix [][]int
 
 //New returns matrix from a given string.
-func New(input string) (matrix, error) {
-	var result matrix = make([][]int, 0)
-	var numbers = make([]int, 0)
-	var num, rowLenght int
-	//check if we have last row empty
-	if input[len(input)-1] == '\n' {
-		return result, errors.New("empty last row")
-	}
-	for i, char := range input {
-		//ignore extra unecessary spaces
-		if i > 0 && !(input[i-1] >= '0' && input[i-1] <= '9') && char == ' ' {
-			continue
+func New(input string) (Matrix, error) {
+	result := make([][]int, 0)
+	//split input into rows
+	rows := strings.Split(input, "\n")
+	//loop over each row
+	for i, row := range rows {
+		row = strings.TrimSpace(row)
+		rowSplit := strings.Split(row, " ")
+		rowInts := make([]int, 0, len(rowSplit))
+		//check if each row has the same size
+		if i > 0 && len(rowSplit) != len(result[i-1]) {
+			return nil, errors.New("wrong matrix")
 		}
-		//don't accept any character excpet from digits, spaces and new line
-		if !(char >= '0' && char <= '9') && char != ' ' && char != '\n' {
-			return nil, errors.New("wrong character in string")
-		}
-		//if we find digit we make it a part of number
-		if char >= '0' && char <= '9' {
-			num = num*10 + (int(char) - 48)
-			if num < 0 {
-				return nil, errors.New("number overflow")
+		//parse input to ints, and and to row made of ints
+		for _, elm := range rowSplit {
+			number, err := strconv.Atoi(elm)
+			if err != nil {
+				return nil, err
 			}
+			rowInts = append(rowInts, number)
 		}
-		//finish reading number when spacer or new line. Append it to row slice
-		if char == ' ' || char == '\n' || i == len(input)-1 {
-			numbers = append(numbers, num)
-			num = 0
-		}
-
-		//if we find or new line or end of string add row slice to slice of rows.
-		if char == '\n' || i == len(input)-1 {
-			//check if we have the same row length
-			if len(result) > 0 && len(numbers) != rowLenght {
-				return nil, errors.New("wrong matrix")
-			}
-			rowLenght = len(numbers)
-			result = append(result, numbers)
-			numbers = []int{}
-		}
+		//add parsed row to a matrix
+		result = append(result, rowInts)
 	}
 	return result, nil
+
 }
 
-func (in *matrix) Rows() [][]int {
+//Rows returns deep copy of matrix, row by row
+func (in *Matrix) Rows() [][]int {
 	out := make([][]int, 0, len(*in))
 	for _, row := range *in {
 		newRow := make([]int, 0, len(row))
@@ -64,7 +51,8 @@ func (in *matrix) Rows() [][]int {
 	return out
 }
 
-func (in *matrix) Cols() [][]int {
+//Cols returns deep copy of Matrix, trasposed columns into rows
+func (in *Matrix) Cols() [][]int {
 	out := make([][]int, 0, len((*in)[0]))
 	for i := 0; i < len((*in)[0]); i++ {
 		newRow := make([]int, 0, len((*in)[0]))
@@ -77,7 +65,8 @@ func (in *matrix) Cols() [][]int {
 	return out
 }
 
-func (in *matrix) Set(row, col, val int) bool {
+//Set allows to change desired matrix element, returns true is success
+func (in *Matrix) Set(row, col, val int) bool {
 	if (row < 0 || row >= len(*in)) || (col < 0 || col >= len((*in)[0])) {
 		return false
 	}
