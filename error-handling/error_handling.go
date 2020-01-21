@@ -1,21 +1,25 @@
 package erratum
 
-import "fmt"
+//Use opens Resourse and runs Frob() on in handling all errors gracefully
+func Use(o ResourceOpener, input string) (result error) {
 
-import "errors"
-
-func Use(o ResourceOpener, input string) error {
 	resource, err := o()
-	var transErr TransientError
-	if errors.As(err, &transErr) {
-		Use(o, input)
-	}
-	if err != nil {
-		return err
-	}
+	for err != nil {
+		if _, ok := err.(TransientError); !ok {
+			return err
+		}
+		resource, err = o()
 
-	fmt.Println(resource, err)
-
-	defer resource.Close()
-	return nil
+	}
+	defer func() {
+		if r, ok := recover().(error); ok {
+			if r, ok := r.(FrobError); ok {
+				resource.Defrob(r.defrobTag)
+			}
+			result = r
+		}
+		resource.Close()
+	}()
+	resource.Frob(input)
+	return result
 }
