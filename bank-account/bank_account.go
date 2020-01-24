@@ -1,12 +1,14 @@
 package account
 
 import "sync"
-//Account balance $$, status true if account open, mux to lock account 
+
+//Account balance $$, status true if account open, mux to lock account
 type Account struct {
+	sync.Mutex
 	balance int64
 	status  bool
-	mux     sync.Mutex
 }
+
 //Open opens accoutnt with initial deposit
 func Open(initialDeposit int64) *Account {
 
@@ -16,36 +18,37 @@ func Open(initialDeposit int64) *Account {
 	account := Account{balance: initialDeposit, status: true}
 	return &account
 }
+
 //Close closes account and retruns payout
 func (account *Account) Close() (payout int64, ok bool) {
-	account.mux.Lock()
+	account.Lock()
+	defer account.Unlock()
 	if !account.status {
-		payout,ok = 0, false
-	}else{
-		payout,ok = account.balance,true
-		account.status = false
-	}		
-	defer account.mux.Unlock()
-	return payout, ok
+		return 0, false
+	}
+	account.status = false
+	return account.balance, true
 
 }
+
 //Balance retruns cash :)
 func (account *Account) Balance() (balance int64, ok bool) {
-
+	account.Lock()
+	defer account.Unlock()
 	if !account.status {
 		return 0, false
 	}
 	return account.balance, true
 }
+
 //Deposit allows desposit or withdrawl money from account
 func (account *Account) Deposit(amount int64) (newBalance int64, ok bool) {
-	account.mux.Lock()
+	account.Lock()
+	defer account.Unlock()
 	newBalance = account.balance + amount
 	if !account.status || newBalance < 0 {
-		newBalance,ok = 0,false
-	}else{
-		account.balance,ok = newBalance, true
+		return 0, false
 	}
-	defer account.mux.Unlock()
-	return newBalance, ok
+	account.balance = newBalance
+	return newBalance, true
 }
